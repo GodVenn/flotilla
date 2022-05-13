@@ -32,6 +32,7 @@ builder.Services.AddScoped<EventService>();
 builder.Services.AddScoped<ReportService>();
 builder.Services.AddScoped<IsarService>();
 builder.Services.AddScoped<EchoService>();
+builder.Services.AddHostedService<MqttService>();
 
 builder.Services
     .AddControllers()
