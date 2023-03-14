@@ -171,7 +171,7 @@ namespace Api.Services
 
         private static string FindMostSuitableMap(
             Dictionary<string, Boundary> boundaries,
-            IList<PlannedTask> tasks
+            IList<MissionTask> tasks
         )
         {
             string mostSuitableMap = "";
@@ -203,15 +203,21 @@ namespace Api.Services
             return mostSuitableMap;
         }
 
-        private static bool CheckTagsInBoundary(List<double[]> boundary, IList<PlannedTask> tasks)
+        private static bool CheckTagsInBoundary(List<double[]> boundary, IList<MissionTask> tasks)
         {
             foreach (var task in tasks)
             {
-                if (task.TagPosition.X < boundary[0][0] | task.TagPosition.X > boundary[1][0])
+                if (
+                    task.InspectionTarget.X < boundary[0][0]
+                    || task.InspectionTarget.X > boundary[1][0]
+                )
                 {
                     return false;
                 }
-                if (task.TagPosition.Y < boundary[0][1] | task.TagPosition.Y > boundary[1][1])
+                if (
+                    task.InspectionTarget.Y < boundary[0][1]
+                    || task.InspectionTarget.Y > boundary[1][1]
+                )
                 {
                     return false;
                 }
@@ -224,11 +230,11 @@ namespace Api.Services
             List<double[]> referenceMap
         )
         {
-            if (checkMap[0][0] < referenceMap[0][0] | checkMap[0][1] < referenceMap[0][1])
+            if (checkMap[0][0] < referenceMap[0][0] || checkMap[0][1] < referenceMap[0][1])
             {
                 return false;
             }
-            if (checkMap[1][0] > referenceMap[1][0] | checkMap[1][1] > referenceMap[1][1])
+            if (checkMap[1][0] > referenceMap[1][0] || checkMap[1][1] > referenceMap[1][1])
             {
                 return false;
             }

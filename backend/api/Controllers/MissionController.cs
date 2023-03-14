@@ -166,14 +166,14 @@ public class MissionController : ControllerBase
             return StatusCode(StatusCodes.Status502BadGateway, message);
         }
 
-        var plannedTasks = echoMission.Tags
+        var tasks = echoMission.Tags
             .Select(
                 t =>
                 {
                     var tagPosition = _stidService
                         .GetTagPosition(t.TagId, scheduledMissionQuery.AssetCode)
                         .Result;
-                    return new PlannedTask(t, tagPosition);
+                    return new MissionTask(t, tagPosition);
                 }
             )
             .ToList();
@@ -185,15 +185,14 @@ public class MissionController : ControllerBase
             EchoMissionId = scheduledMissionQuery.EchoMissionId,
             MissionStatus = MissionStatus.Pending,
             DesiredStartTime = scheduledMissionQuery.DesiredStartTime,
-            PlannedTasks = plannedTasks,
-            Tasks = new List<IsarTask>(),
+            Tasks = tasks,
             AssetCode = scheduledMissionQuery.AssetCode,
             Map = new MissionMap()
         };
 
         await _mapService.AssignMapToMission(scheduledMission);
 
-        if (plannedTasks.Any())
+        if (tasks.Any())
             scheduledMission.CalculateEstimatedDuration();
 
         var newMission = await _missionService.Create(scheduledMission);
